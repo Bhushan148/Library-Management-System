@@ -136,12 +136,6 @@ set foreign_key_checks = 1;
 
 ```
 
-#### 1. Create and Select Database
-```sql
-CREATE DATABASE library_management_system;
-USE library_management_system;
-```
-
 ### 2. CRUD Operations
 
 - **Create**: Inserted sample records into the `books` table.
@@ -149,8 +143,8 @@ USE library_management_system;
 - **Update**: Updated records in the `employees` table.
 - **Delete**: Removed records from the `members` table as needed.
 
-**Task 1. Create a New Book Record**
--- "978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.')"
+**Task 1: Create a New Book Record**  
+"978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.')"
 
 ```sql
 INSERT INTO books(isbn, book_title, category, rental_price, status, author, publisher)
@@ -165,24 +159,23 @@ SET member_address = '125 Oak St'
 WHERE member_id = 'C103';
 ```
 
-**Task 3: Delete a Record from the Issued Status Table**
--- Objective: Delete the record with issued_id = 'IS121' from the issued_status table.
+**Task 3: Delete a Record from the Issued Status Table**  
+Delete the record with issued_id = 'IS121' from the issued_status table.
 
 ```sql
 DELETE FROM issued_status
 WHERE   issued_id =   'IS121';
 ```
 
-**Task 4: Retrieve All Books Issued by a Specific Employee**
--- Objective: Select all books issued by the employee with emp_id = 'E101'.
+**Task 4: Retrieve All Books Issued by a Specific Employee**  
+Select all books issued by the employee with emp_id = 'E101'.
 ```sql
 SELECT * FROM issued_status
 WHERE issued_emp_id = 'E101'
 ```
 
-
-**Task 5: List Members Who Have Issued More Than One Book**
--- Objective: Use GROUP BY to find members who have issued more than one book.
+**Task 5: List Members Who Have Issued More Than One Book**  
+Use GROUP BY to find members who have issued more than one book.
 
 ```sql
 SELECT
@@ -195,7 +188,8 @@ HAVING COUNT(*) > 1
 
 ### 3. CTAS (Create Table As Select)
 
-**Task 6: Create Summary Tables**: Used CTAS to generate new tables based on query results - each book and total book_issued_cnt**
+**Task 6: Create Summary Tables:**  
+Used CTAS to generate new tables based on query results - each book and total book_issued_cnt.
 
 ```sql
 CREATE TABLE book_issued_cnt AS
@@ -448,54 +442,56 @@ If the book is not available (status = 'no'), the procedure should return an err
 ```sql
 
 -- Drop the existing procedure if it exists
-DROP PROCEDURE IF EXISTS update_book_status;
+DROP PROCEDURE IF EXISTS issue_book;
 
--- Define the new procedure
 DELIMITER $$
 
-CREATE PROCEDURE update_book_status(IN p_book_id VARCHAR(50), IN p_member_id VARCHAR(50), IN p_emp_id VARCHAR(50))
+CREATE PROCEDURE issue_book(
+    IN p_issued_id VARCHAR(10),
+    IN p_issued_member_id VARCHAR(30),
+    IN p_issued_book_isbn VARCHAR(30),
+    IN p_issued_emp_id VARCHAR(10)
+)
 BEGIN
     DECLARE v_status VARCHAR(10);
+    DECLARE v_message VARCHAR(255);
 
-    -- Get the current status of the book
+    -- Check book availability
     SELECT status INTO v_status
     FROM books
-    WHERE isbn = p_book_id;
+    WHERE isbn = p_issued_book_isbn;
 
-    -- Check if the book is available
     IF v_status = 'yes' THEN
-        -- Update the book status to 'no' and issue the book
+        -- Issue the book and update its status
+        INSERT INTO issued_status (issued_id, issued_member_id, issued_date, issued_book_isbn, issued_emp_id)
+        VALUES (p_issued_id, p_issued_member_id, CURRENT_DATE, p_issued_book_isbn, p_issued_emp_id);
+
         UPDATE books
         SET status = 'no'
-        WHERE isbn = p_book_id;
-        
-        -- Insert a record into the issued_status table
-        INSERT INTO issued_status (issued_id, issued_member_id, issued_book_isbn, issued_emp_id, issued_date)
-        VALUES (CONCAT('IS', LPAD(FLOOR(RAND() * 1000), 3, '0')), p_member_id, p_book_id, p_emp_id, CURRENT_DATE);
+        WHERE isbn = p_issued_book_isbn;
 
-        SELECT 'Book has been issued and status updated to "no".' AS message;
-        
+        -- Set success message
+        SET v_message = CONCAT('Success: Book issued. ISBN: ', p_issued_book_isbn);
     ELSE
-        -- Book is not available
-        SELECT 'Error: The book is currently not available.' AS message;
+        -- Set error message
+        SET v_message = CONCAT('Error: Book unavailable. ISBN: ', p_issued_book_isbn);
     END IF;
 
+    -- Output the message
+    SELECT v_message AS message;
 END $$
 
 DELIMITER ;
 
--- Test with an available book
-CALL update_book_status('978-0-553-29698-2', 'C108', 'E104');
+-- Test Cases
+CALL issue_book('IS158', 'C108', '978-0-09-957807-9', 'E104'); -- Should return success message
+CALL issue_book('IS156', 'C108', '978-0-375-41398-8', 'E104'); -- Should return error message
 
--- Test with a book that is already not available
-CALL update_book_status('978-0-375-41398-8', 'C108', 'E104');
-
--- Verify the books table to see the status changes
+-- View Results
 SELECT * FROM books WHERE isbn = '978-0-553-29698-2';
 SELECT * FROM books WHERE isbn = '978-0-375-41398-8';
-
--- Verify the issued_status table to see the new records
 SELECT * FROM issued_status;
+SELECT * FROM books;
 
 ```
 
@@ -540,15 +536,4 @@ SELECT * FROM overdue_books_summary;
 ## Conclusion
 
 This project demonstrates the application of SQL skills in creating and managing a library management system. It includes database setup, data manipulation, and advanced querying, providing a solid foundation for data management and analysis.
-
-## How to Use
-
-1. **Clone the Repository**: Clone this repository to your local machine.
-   ```sh
-   git clone https://github.com/najirh/Library-System-Management---P2.git
-   ```
-
-2. **Set Up the Database**: Execute the SQL scripts in the `database_setup.sql` file to create and populate the database.
-3. **Run the Queries**: Use the SQL queries in the `analysis_queries.sql` file to perform the analysis.
-4. **Explore and Modify**: Customize the queries as needed to explore different aspects of the data or answer additional questions.
 
