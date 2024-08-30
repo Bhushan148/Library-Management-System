@@ -1,41 +1,42 @@
-# Library Management System using SQL Project
+# 📚 Library Management System using SQL Project
 
-## Project Overview
+## 📝 Project Overview 📝
 
-**Project Title**: Library Management System  
-**Database**: `Library_Management_System`
+**🔖Project Title**: Library Management System 🏛️
+
+**💾 Database**: `Library_Management_System`
 
 This project demonstrates the implementation of a Library Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
 
 ![Library_project](https://github.com/najirh/Library-System-Management---P2/blob/main/library.jpg)
 
-## Objectives
+## 🎯 Objectives
 
 1. **Set up the Library Management System Database**: Create and populate the database with tables for branches, employees, members, books, issued status, and return status.
 2. **CRUD Operations**: Perform Create, Read, Update, and Delete operations on the data.
 3. **CTAS (Create Table As Select)**: Utilize CTAS to create new tables based on query results.
 4. **Data Analysis & Findings**: Develop complex queries to analyze and retrieve specific data.
 
-# <span style="color:green; font-weight:bold;">Project Structure</span>
+# <span style="color:green; font-weight:bold;">🏗️ Project Structure</span>
 
-## 1. Database Setup
+## 1. 🔧 Database Setup
 ![ERD](https://github.com/Bhushan148/Library-Management-System/blob/main/Screenshot%202024-08-28%20115609.png)
 
 - **Database Creation:** Created a database named `Library_Management_System`.
 - **Table Creation:** Created tables for branches, employees, members, books, issued status, and return status. Each table includes relevant columns and relationships.
 
-## Library Management System Database Setup
+## 📚 Library Management System Database Setup
 
-### Objective
+### Objective 🎯
 - **Ensure Data Integrity:** Correct data types and constraints maintain accurate data and relationships.
 - **Optimize Performance:** Efficient data types and indexes improve query speed and system performance.
 - **Align Schema:** Adjustments ensure the schema meets application requirements and business rules.
 - **Handle Migration Issues:** Resolve inconsistencies from importing data from different systems or devices.
 
-### Importing Tables
+### Importing Tables ⬆️
 When importing tables from external sources or devices, data types and constraints may not fully align with MySQL standards. Adjusting the schema ensures compatibility and efficiency.
 
-### Steps
+### Steps 🔢
 
 #### 1. Create and Select Database
 ```sql
@@ -136,7 +137,7 @@ set foreign_key_checks = 1;
 
 ```
 
-### 2. CRUD Operations
+### 2. CRUD Operations 🛠️
 
 - **Create**: Inserted sample records into the `books` table.
 - **Read**: Retrieved and displayed data from various tables.
@@ -186,7 +187,7 @@ GROUP BY 1
 HAVING COUNT(*) > 1
 ```
 
-### 3. CTAS (Create Table As Select)
+### 3. CTAS (Create Table As Select) 📋
 
 **Task 6: Create Summary Tables:**  
 Used CTAS to generate new tables based on query results - each book and total book_issued_cnt.
@@ -201,7 +202,7 @@ GROUP BY b.isbn, b.book_title;
 ```
 
 
-### 4. Data Analysis & Findings
+### 4. Data Analysis & Findings 📊
 
 The following SQL queries were used to address specific questions:
 
@@ -527,13 +528,13 @@ GROUP BY ist.issued_member_id;
 SELECT * FROM overdue_books_summary;
 ```
 
-## Reports
+## 📄 Reports
 
 - **Database Schema**: Detailed table structures and relationships.
 - **Data Analysis**: Insights into book categories, employee salaries, member registration trends, and issued books.
 - **Summary Reports**: Aggregated data on high-demand books and employee performance.
 
-## Conclusion
+## 🔚 Conclusion
 
 This project demonstrates the application of SQL skills in creating and managing a library management system. It includes database setup, data manipulation, and advanced querying, providing a solid foundation for data management and analysis.
 
